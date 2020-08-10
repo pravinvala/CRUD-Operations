@@ -1,0 +1,147 @@
+﻿@model EmployeeMaster.Models.EmployeeCreateModel
+
+<style>
+    img {
+        max-width: 128px;
+        max-height: 128px;
+        width: auto;
+        height: auto;
+    }
+</style>
+<div class="row">
+    @using (Html.BeginForm("Create", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.EmpID)
+        @Html.HiddenFor(m => m.EmployeePhoto)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="col-md-6 form-group">
+            <label>First Name</label>
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control ", @placeholder = "First Name" })
+            @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Last Name</label>
+            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control ", @placeholder = "Last Name" })
+            @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Email</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control ", type = "Email", @placeholder = "Email" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Date of Birth</label>
+            @Html.TextBoxFor(m => m.DOB, "{0:dd/MM/yyyy}", new { @class = "form-control date-picker", })
+            @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-6 form-group">
+                <label>Gender</label><br />
+                @Html.RadioButton("Gender", "M", true) Male<br />
+                @Html.RadioButton("Gender", "F") Female<br />
+                @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6 form-group">
+                <label>Are You married?</label>
+                @Html.CheckBoxFor(m => m.MaritalStatus)
+                @Html.ValidationMessageFor(m => m.MaritalStatus, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        if (Model.EmployeePhoto != null)
+        {
+            <div class="col-md-3 form-group">
+                <label>Photo</label>
+                <input type="file" class="form-control" name="empPic" id="empPic" />
+            </div>
+            <div class="col-md-3 form-group">
+                <img src="~/Images/@Model.EmployeePhoto" height="128" width="128" />
+            </div>
+        }
+        else
+        {
+            <div class="col-md-6 form-group">
+                <label>Photo</label>
+                <input type="file" class="form-control" name="empPic" id="empPic" />
+            </div>
+        }
+        <div class="col-md-6 form-group">
+            <label>salary</label>
+            @Html.TextBoxFor(m => m.Salary, new { @class = "form-control ", @type = "number", @placeholder = "Salary", maxlength = 10, @onkeypress = "return isNumberWithDecimalKey(event)" })
+            @Html.ValidationMessageFor(m => m.Salary, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Address</label>
+            @Html.TextAreaFor(m => m.Address, new { @class = "form-control ", })
+            @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Hobbies</label>
+            @Html.ListBoxFor(m => m.Hobbies, new MultiSelectList(ViewBag.HobbieList, "Value", "Text"), new { @class = "form-control", })
+            @Html.ValidationMessageFor(m => m.Hobbies, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Country</label>
+            @Html.DropDownListFor(m => m.CountryID, new SelectList(ViewBag.Country, "Value", "Text"), "Select Country", new { @class = "form-control", @onclick = "getState()" })
+            @Html.ValidationMessageFor(m => m.CountryID, "", new { @class = "text-danger" })
+        </div>
+        if (Model.EmpID > 0)
+        {
+            <div class="col-md-6 form-group" id="State">
+                <label>State</label>
+                @Html.DropDownListFor(m => m.StateID, new SelectList(ViewBag.State, "Value", "Text"), "Select State", new { @class = "form-control ", @onclick = "getCity()" })
+                @Html.ValidationMessageFor(m => m.StateID, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6 form-group" id="City">
+                <label>City</label>
+                @Html.DropDownListFor(m => m.CityID, new SelectList(ViewBag.City, "Value", "Text"), "Select City", new { @class = "form-control " })
+                @Html.ValidationMessageFor(m => m.CityID, "", new { @class = "text-danger" })
+            </div>
+        }
+        else
+        {
+            <div class="col-md-6 form-group" id="State">
+                <label>State</label>
+                @Html.DropDownListFor(m => m.StateID, new List<SelectListItem>(), "Select State", new { @class = "form-control ", @onclick = "getCity()" })
+                @Html.ValidationMessageFor(m => m.StateID, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6 form-group" id="City">
+                <label>City</label>
+                @Html.DropDownListFor(m => m.CityID, new List<SelectListItem>(), "Select City", new { @class = "form-control " })
+                @Html.ValidationMessageFor(m => m.CityID, "", new { @class = "text-danger" })
+            </div>
+        }
+
+        <div class="col-md-6 form-group">
+            <label>Zipcode</label>
+            @Html.TextBoxFor(m => m.Zipcode, new { @class = "form-control ", @placeholder = "Enter Zincode", maxlength = 6, @onkeypress = "return isNumberWithDecimalKey(event)" })
+            @Html.ValidationMessageFor(m => m.Zipcode, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Password </label>
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control ", @placeholder = "Enter Password" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-12 form-group">
+            <button class="btn btn-secondary pull-right" data-dismiss="modal" type="button"> close</button>
+            <button class="btn btn-primary pull-right" type="submit"> Save</button>
+        </div>
+    }
+</div>
+
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@*
+if ($("#DOB").val() != "") {
+    if (getAge($("#DOB").val()) <= 18 ) {
+        toastr["warning"]("You must have 18 year or more age");
+        return
+    }
+}
+if ($("#Salary").val() < 5000) {
+    toastr["warning"]("Salary must be higher then 5000");
+    return
+}
+*@

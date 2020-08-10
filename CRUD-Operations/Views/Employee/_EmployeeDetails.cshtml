@@ -1,0 +1,45 @@
+﻿@model EmployeeMaster.Models.EmployeeViewModel
+@{
+
+    Layout = null;
+}
+<style>
+    img {
+        max-width: 128px;
+        max-height: 128px;
+        width: auto;
+        height: auto;
+        border-radius: 50%;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12 text-center form-group">
+        <img src="~/Images/@Model.EmployeePhoto" height="128" width="128" />
+    </div>
+    <div class="col-md-12 text-center form-group">
+        <label class="h3">@Model.FirstName @Model.LastName</label>
+    </div>
+    <dl class="row center-block">
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+        <dt class="col-sm-3">Gender</dt>
+        <dd class="col-sm-9">@(Model.Gender == "M" ? "Male" : "Female")</dd>
+        <dt class="col-sm-3">Marital Status</dt>
+        <dd class="col-sm-9">@(Model.MaritalStatus ? "Married" : "Unmarried")</dd>
+        <dt class="col-sm-3">Hobbies</dt>
+        <dd class="col-sm-9">@Model.Hobbies</dd>
+        <dt class="col-sm-3">Salary</dt>
+        <dd class="col-sm-9">@Model.Salary</dd>
+        <dt class="col-sm-3">Address</dt>
+        <dd class="col-sm-9">@Model.Address</dd>
+        <dt class="col-sm-3">City</dt>
+        <dd class="col-sm-9">@Model.City</dd>
+        <dt class="col-sm-3">State</dt>
+        <dd class="col-sm-9">@Model.State</dd>
+        <dt class="col-sm-3">Country</dt>
+        <dd class="col-sm-9">@Model.Country</dd>
+        <dt class="col-sm-3">Zipcode</dt>
+        <dd class="col-sm-9">@Model.Zipcode</dd>
+    </dl>
+</div>

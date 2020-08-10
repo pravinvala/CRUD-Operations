@@ -1,0 +1,249 @@
+﻿@model EmployeeMaster.Models.EmployeeViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    img {
+        max-width: 64px;
+        max-height: 64px;
+        width: auto;
+        height: auto;
+    }
+</style>
+
+<div class="container">
+    <label class="h2 text-center">Employee List</label>
+    <a href="javascript:editEmployee();" class="btn btn-success pull-right"> Add New</a>
+    <hr />
+    <table id="emp-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Gender</th>
+                <th>Marital Status</th>
+                <th>DOB</th>
+                <th>Hobbies</th>
+                <th>Photo</th>
+                <th>Salary</th>
+                <th>Address</th>
+                <th width="17%">Action</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="dialog" style="display: none">
+    </div>
+    <div class="modal fade" id="EmpModal" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Employee Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="EmpContainer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        
+        $(document).ready(function () {
+            fnGetEmpData();
+            $("#DOB").datepicker({
+                format: 'dd/MM/yyyy',
+            });
+            if ('@TempData["Message"]' != '') {
+                toastr["success"]("@TempData["Message"]");
+            }
+        });
+
+        var oTable;
+        function fnGetEmpData() {
+            oTable = $("#emp-table").DataTable({
+                searching: true,
+                ordering: true,
+                lengthChange: true,
+                serverSide: true,
+                responsive: true,
+                processing: true,
+                sAjaxSource: "/Employee/GetEmpData",
+                columns: [
+                    {
+                        "data": "FirstName",
+                        "render": function (data, type, full, meta) {
+                            return full.FirstName + " " + full.LastName;
+                        }
+                    },
+                    { "data": "Email" },
+                    {
+                        "data": "Gender",
+                        "render": function (data) {
+                            return data == "M" ? "Male" : "Female";
+                        }
+                    },
+                    {
+                        "data": "MaritalStatus",
+                        "render": function (data) {
+                            return data ? "Maried" : "Unmaried";
+                        }
+                    },
+                    { "data": "DOB" },
+                    { "data": "Hobbies" },
+                    {
+                        "data": "EmployeePhoto",
+                        "render": function (data) {
+                            return '<img src=/Images/' + data +' height="64" width="64">'
+                        }
+                    },
+                    { "data": "Salary" },
+                    {
+                        "data": "Address",
+                        "render": function (data, type, full, meta) {
+                            return full.Address + ", " + full.City + ", " + full.State + ", " + full.Country + "-" + full.Zipcode;
+                        }
+                    },
+                    {
+                        "data": "EmpID",
+                        "render": function (data) {
+                            return '<a href = "javascript:viewEmployee(' + data + ');" class="btn btn-primary btn-sm btn-success" > View</a > <a href="javascript:editEmployee(' + data + ');" class="btn btn-primary btn-sm btn-edit">Edit</a> <a href="javascript:deleteEmployee(' + data + ');" class="btn btn-sm btn-danger btn-delete">Delete</a>'
+                        }
+                    },
+                ],
+                columnDefs: [{
+                    'targets': [6, 9], 
+                    'orderable': false,
+                },
+                    {
+                        'searchable': false,
+                        'targets': [2,3]
+                    }]
+            });
+        }
+
+        function editEmployee(id) {
+
+            //if (id != null) {
+            //    window.location.href = "/Employee/Create/" + id;
+            //}
+            //else {
+            //    window.location.href = "/Employee/Create/";
+            //}
+
+            var dataurl = "";
+            if (id != null) {
+                dataurl = "/Employee/Create/" + id;
+            }
+            else {
+                dataurl = "/Employee/Create/";
+            }
+            $.ajax({
+                type: "GET",
+                url: dataurl,
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#EmpContainer').html(response);
+                    $('#EmpModal').modal('show');
+                    $(".date-picker").datepicker({
+                        format: 'dd/MM/yyyy',
+                    });
+                },
+                error: function (response) {
+                    toastr["error"]("Something went wrong, please try agin");
+                }
+            });
+        }
+
+        function getState() {
+            var id = $("#CountryID").val();
+            $('#CityID').html("<option value=''>Select City</option>");
+            $.ajax({
+                url: '/Employee/GetStateData?id=' + id,
+                type: 'GET',
+                success: function (result) {
+                    if (result.isSuccess) {
+                        var state = "";
+                        state = state + '<option value="">Selsct State</option>';
+                        for (var i = 0; i < result.result.length; i++) {
+                            state = state + '<option value=' + result.result[i].Value + '>' + result.result[i].Text + '</option>';
+                        }
+                        state = state + '</select>';
+                        $('#StateID').html(state);
+                    }
+                    else {
+                        //Error
+                    }
+                }
+            });
+        }
+
+        function getCity() {
+            var id = $("#StateID").val();
+            $.ajax({
+                url: '/Employee/GetCityData?id=' + id,
+                type: 'GET',
+                success: function (result) {
+                    if (result.isSuccess) {
+                        var city = "";
+                        city = city + '<option value="">Select City</option>';
+                        for (var i = 0; i < result.result.length; i++) {
+                            city = city + '<option value=' + result.result[i].Value + '>' + result.result[i].Text + '</option>';
+                        }
+                        city = city + '</select>';
+                        $('#CityID').html(city);
+                    }
+                    else {
+                        //Error
+                    }
+                }
+            });
+        }
+
+        function viewEmployee(id) {
+            $.ajax({
+                type: "POST",
+                url: "/Employee/GetSingleEmployee?id=" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $('#EmpContainer').html(response);
+
+                    $('#EmpModal').modal('show');
+                },
+                error: function (response) {
+                    toastr["error"]("Something went wrong, please try agin");
+                }
+            });
+        }
+
+        function deleteEmployee(id) {
+            var conf = confirm("Are you sure want to delete this employee?");
+            if (conf) {
+                $.ajax({
+                    url: '/Employee/DeleteEmp/?id=' + id,
+                    type: 'POST',
+                    success: function (result) {
+                        if (result.isSuccess) {
+                            toastr["success"]("Employee Sucessfully Deleted.");
+                            oTable.destroy();
+                            fnGetEmpData();
+                        }
+                        else {
+                            toastr["error"]("Something went wrong, please try agin");
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+}

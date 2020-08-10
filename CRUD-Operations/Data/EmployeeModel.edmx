@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="EmployeeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="TBL_City">
+          <Key>
+            <PropertyRef Name="CityID" />
+          </Key>
+          <Property Name="CityID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="StateID" Type="int" />
+        </EntityType>
+        <EntityType Name="TBL_Country">
+          <Key>
+            <PropertyRef Name="CountryID" />
+          </Key>
+          <Property Name="CountryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="TBL_Employee">
+          <Key>
+            <PropertyRef Name="EmpID" />
+          </Key>
+          <Property Name="EmpID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Gender" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="MaritalStatus" Type="bit" Nullable="false" />
+          <Property Name="DOB" Type="date" Nullable="false" />
+          <Property Name="Hobbies" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="EmployeePhoto" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Salary" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="CountryID" Type="int" Nullable="false" />
+          <Property Name="StateID" Type="int" Nullable="false" />
+          <Property Name="CityID" Type="int" Nullable="false" />
+          <Property Name="ZipCode" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TBL_State">
+          <Key>
+            <PropertyRef Name="StateID" />
+          </Key>
+          <Property Name="StateID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="CountryID" Type="int" />
+        </EntityType>
+        <Association Name="FK_TBL_City_TBL_State">
+          <End Role="TBL_State" Type="Self.TBL_State" Multiplicity="0..1" />
+          <End Role="TBL_City" Type="Self.TBL_City" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_State">
+              <PropertyRef Name="StateID" />
+            </Principal>
+            <Dependent Role="TBL_City">
+              <PropertyRef Name="StateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Employee_TBL_City">
+          <End Role="TBL_City" Type="Self.TBL_City" Multiplicity="1" />
+          <End Role="TBL_Employee" Type="Self.TBL_Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_City">
+              <PropertyRef Name="CityID" />
+            </Principal>
+            <Dependent Role="TBL_Employee">
+              <PropertyRef Name="CityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Employee_TBL_Country">
+          <End Role="TBL_Country" Type="Self.TBL_Country" Multiplicity="1" />
+          <End Role="TBL_Employee" Type="Self.TBL_Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Country">
+              <PropertyRef Name="CountryID" />
+            </Principal>
+            <Dependent Role="TBL_Employee">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Employee_TBL_State">
+          <End Role="TBL_State" Type="Self.TBL_State" Multiplicity="1" />
+          <End Role="TBL_Employee" Type="Self.TBL_Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_State">
+              <PropertyRef Name="StateID" />
+            </Principal>
+            <Dependent Role="TBL_Employee">
+              <PropertyRef Name="StateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_State_TBL_Country">
+          <End Role="TBL_Country" Type="Self.TBL_Country" Multiplicity="0..1" />
+          <End Role="TBL_State" Type="Self.TBL_State" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Country">
+              <PropertyRef Name="CountryID" />
+            </Principal>
+            <Dependent Role="TBL_State">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EmployeeModelStoreContainer">
+          <EntitySet Name="TBL_City" EntityType="Self.TBL_City" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBL_Country" EntityType="Self.TBL_Country" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBL_Employee" EntityType="Self.TBL_Employee" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBL_State" EntityType="Self.TBL_State" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_TBL_City_TBL_State" Association="Self.FK_TBL_City_TBL_State">
+            <End Role="TBL_State" EntitySet="TBL_State" />
+            <End Role="TBL_City" EntitySet="TBL_City" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Employee_TBL_City" Association="Self.FK_TBL_Employee_TBL_City">
+            <End Role="TBL_City" EntitySet="TBL_City" />
+            <End Role="TBL_Employee" EntitySet="TBL_Employee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Employee_TBL_Country" Association="Self.FK_TBL_Employee_TBL_Country">
+            <End Role="TBL_Country" EntitySet="TBL_Country" />
+            <End Role="TBL_Employee" EntitySet="TBL_Employee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Employee_TBL_State" Association="Self.FK_TBL_Employee_TBL_State">
+            <End Role="TBL_State" EntitySet="TBL_State" />
+            <End Role="TBL_Employee" EntitySet="TBL_Employee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_State_TBL_Country" Association="Self.FK_TBL_State_TBL_Country">
+            <End Role="TBL_Country" EntitySet="TBL_Country" />
+            <End Role="TBL_State" EntitySet="TBL_State" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EmployeeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="TBL_City">
+          <Key>
+            <PropertyRef Name="CityID" />
+          </Key>
+          <Property Name="CityID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StateID" Type="Int32" />
+          <NavigationProperty Name="TBL_State" Relationship="Self.FK_TBL_City_TBL_State" FromRole="TBL_City" ToRole="TBL_State" />
+          <NavigationProperty Name="TBL_Employee" Relationship="Self.FK_TBL_Employee_TBL_City" FromRole="TBL_City" ToRole="TBL_Employee" />
+        </EntityType>
+        <EntityType Name="TBL_Country">
+          <Key>
+            <PropertyRef Name="CountryID" />
+          </Key>
+          <Property Name="CountryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TBL_Employee" Relationship="Self.FK_TBL_Employee_TBL_Country" FromRole="TBL_Country" ToRole="TBL_Employee" />
+          <NavigationProperty Name="TBL_State" Relationship="Self.FK_TBL_State_TBL_Country" FromRole="TBL_Country" ToRole="TBL_State" />
+        </EntityType>
+        <EntityType Name="TBL_Employee">
+          <Key>
+            <PropertyRef Name="EmpID" />
+          </Key>
+          <Property Name="EmpID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Gender" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MaritalStatus" Type="Boolean" Nullable="false" />
+          <Property Name="DOB" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Hobbies" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EmployeePhoto" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Salary" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CountryID" Type="Int32" Nullable="false" />
+          <Property Name="StateID" Type="Int32" Nullable="false" />
+          <Property Name="CityID" Type="Int32" Nullable="false" />
+          <Property Name="ZipCode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="TBL_City" Relationship="Self.FK_TBL_Employee_TBL_City" FromRole="TBL_Employee" ToRole="TBL_City" />
+          <NavigationProperty Name="TBL_Country" Relationship="Self.FK_TBL_Employee_TBL_Country" FromRole="TBL_Employee" ToRole="TBL_Country" />
+          <NavigationProperty Name="TBL_State" Relationship="Self.FK_TBL_Employee_TBL_State" FromRole="TBL_Employee" ToRole="TBL_State" />
+        </EntityType>
+        <EntityType Name="TBL_State">
+          <Key>
+            <PropertyRef Name="StateID" />
+          </Key>
+          <Property Name="StateID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CountryID" Type="Int32" />
+          <NavigationProperty Name="TBL_City" Relationship="Self.FK_TBL_City_TBL_State" FromRole="TBL_State" ToRole="TBL_City" />
+          <NavigationProperty Name="TBL_Country" Relationship="Self.FK_TBL_State_TBL_Country" FromRole="TBL_State" ToRole="TBL_Country" />
+          <NavigationProperty Name="TBL_Employee" Relationship="Self.FK_TBL_Employee_TBL_State" FromRole="TBL_State" ToRole="TBL_Employee" />
+        </EntityType>
+        <Association Name="FK_TBL_City_TBL_State">
+          <End Role="TBL_State" Type="Self.TBL_State" Multiplicity="0..1" />
+          <End Role="TBL_City" Type="Self.TBL_City" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_State">
+              <PropertyRef Name="StateID" />
+            </Principal>
+            <Dependent Role="TBL_City">
+              <PropertyRef Name="StateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Employee_TBL_City">
+          <End Role="TBL_City" Type="Self.TBL_City" Multiplicity="1" />
+          <End Role="TBL_Employee" Type="Self.TBL_Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_City">
+              <PropertyRef Name="CityID" />
+            </Principal>
+            <Dependent Role="TBL_Employee">
+              <PropertyRef Name="CityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Employee_TBL_Country">
+          <End Role="TBL_Country" Type="Self.TBL_Country" Multiplicity="1" />
+          <End Role="TBL_Employee" Type="Self.TBL_Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Country">
+              <PropertyRef Name="CountryID" />
+            </Principal>
+            <Dependent Role="TBL_Employee">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_State_TBL_Country">
+          <End Role="TBL_Country" Type="Self.TBL_Country" Multiplicity="0..1" />
+          <End Role="TBL_State" Type="Self.TBL_State" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_Country">
+              <PropertyRef Name="CountryID" />
+            </Principal>
+            <Dependent Role="TBL_State">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TBL_Employee_TBL_State">
+          <End Role="TBL_State" Type="Self.TBL_State" Multiplicity="1" />
+          <End Role="TBL_Employee" Type="Self.TBL_Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TBL_State">
+              <PropertyRef Name="StateID" />
+            </Principal>
+            <Dependent Role="TBL_Employee">
+              <PropertyRef Name="StateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EmployeeEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TBL_City" EntityType="Self.TBL_City" />
+          <EntitySet Name="TBL_Country" EntityType="Self.TBL_Country" />
+          <EntitySet Name="TBL_Employee" EntityType="Self.TBL_Employee" />
+          <EntitySet Name="TBL_State" EntityType="Self.TBL_State" />
+          <AssociationSet Name="FK_TBL_City_TBL_State" Association="Self.FK_TBL_City_TBL_State">
+            <End Role="TBL_State" EntitySet="TBL_State" />
+            <End Role="TBL_City" EntitySet="TBL_City" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Employee_TBL_City" Association="Self.FK_TBL_Employee_TBL_City">
+            <End Role="TBL_City" EntitySet="TBL_City" />
+            <End Role="TBL_Employee" EntitySet="TBL_Employee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Employee_TBL_Country" Association="Self.FK_TBL_Employee_TBL_Country">
+            <End Role="TBL_Country" EntitySet="TBL_Country" />
+            <End Role="TBL_Employee" EntitySet="TBL_Employee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_State_TBL_Country" Association="Self.FK_TBL_State_TBL_Country">
+            <End Role="TBL_Country" EntitySet="TBL_Country" />
+            <End Role="TBL_State" EntitySet="TBL_State" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TBL_Employee_TBL_State" Association="Self.FK_TBL_Employee_TBL_State">
+            <End Role="TBL_State" EntitySet="TBL_State" />
+            <End Role="TBL_Employee" EntitySet="TBL_Employee" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EmployeeModelStoreContainer" CdmEntityContainer="EmployeeEntities">
+          <EntitySetMapping Name="TBL_City">
+            <EntityTypeMapping TypeName="EmployeeModel.TBL_City">
+              <MappingFragment StoreEntitySet="TBL_City">
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBL_Country">
+            <EntityTypeMapping TypeName="EmployeeModel.TBL_Country">
+              <MappingFragment StoreEntitySet="TBL_Country">
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBL_Employee">
+            <EntityTypeMapping TypeName="EmployeeModel.TBL_Employee">
+              <MappingFragment StoreEntitySet="TBL_Employee">
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="MaritalStatus" ColumnName="MaritalStatus" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="Hobbies" ColumnName="Hobbies" />
+                <ScalarProperty Name="EmployeePhoto" ColumnName="EmployeePhoto" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBL_State">
+            <EntityTypeMapping TypeName="EmployeeModel.TBL_State">
+              <MappingFragment StoreEntitySet="TBL_State">
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
